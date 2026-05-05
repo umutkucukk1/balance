@@ -85,7 +85,7 @@ body.light .pbtn{background:#e8f5e9}
 .ban.ok{background:rgba(0,204,102,0.1);border:1.5px solid #00cc66;color:#00cc66}
 .ban.wa{background:rgba(255,170,0,0.1);border:1.5px solid #ffaa00;color:#ffaa00}
 .ban.ba{background:rgba(255,85,51,0.1);border:1.5px solid #ff5533;color:#ff5533}
-.fbox{background:var(--bg3);border-left:4px solid #4488ff;border:1px solid var(--border);padding:11px;margin-bottom:12px;font-family:monospace;font-size:11px;color:#6699cc;line-height:2}
+.fbox{background:var(--bg3);border-left:4px solid #4488ff;border:1px solid var(--border);padding:13px;margin-bottom:12px;font-family:monospace;font-size:13px;color:#6699cc;line-height:2.2}
 body.light .fbox{color:#224488}
 .fbox .ft{font-size:10px;color:#2255aa;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
 .fbox em{color:#88bbff;font-weight:700;font-style:normal}
@@ -907,6 +907,61 @@ function doPdf() {
     '<div class="sec"><div class="st">2. Tur De&#287;erlendirmesi</div><div class="sr">'+srt+'</div></div>'+
     postSec + rsec + bsec +
 
+    // F1 TANISALI
+    (r.hasF1 ? (function(){
+      var z1=r.zone10816f1;
+      var zc=z1.q==='ok'?'#006633':z1.q==='wa'?'#885500':'#cc2200';
+      var zk=z1.q==='ok'?'iok':z1.q==='wa'?'iwarn':'ibad';
+      var cls10N={'1':'S&#305;n&#305;f I','2':'S&#305;n&#305;f II','3':'S&#305;n&#305;f III','4':'S&#305;n&#305;f IV'};
+      return '<div class="sec"><div class="st">F1 Motor Taraf&#305; Tan&#305;sal &#214;l&#231;&#252;m</div>'+
+        '<div class="ibox '+zk+'"><b>'+cls10N[r.isoSel]+' | F1 = '+r.v0f1.toFixed(2)+' mm/s &#8594; B&#246;lge '+z1.z+' | '+z1.d+'</b></div>'+
+        '<table><tr><th>Yatak</th><th>Titre&#351;im</th><th>ISO 10816 B&#246;lge</th><th>Yorum</th></tr>'+
+        '<tr><td>F2 &#8212; Fan Taraf&#305;</td><td>'+r.v0.toFixed(2)+' mm/s</td><td>B&#246;lge '+r.zone10816.z+'</td><td>'+(r.v0f1>r.v0?'&#9993; Daha d&#252;&#351;&#252;k':'Bask&#305;n yatak')+'</td></tr>'+
+        '<tr style="background:#fafafa"><td>F1 &#8212; Motor Taraf&#305;</td><td style="color:'+zc+';font-weight:700">'+r.v0f1.toFixed(2)+' mm/s</td><td>B&#246;lge '+z1.z+'</td><td style="color:'+zc+'">'+(r.v0f1>r.v0?'&#9888; Motor taraf&#305; bask&#305;n':'Daha d&#252;&#351;&#252;k')+'</td></tr>'+
+        '</table></div>';
+    })() : '')+
+
+    // GEOMETRİ
+    (r.hasGeo ? (function(){
+      var gc=r.geoRec==='ok'?'#006633':r.geoRec==='wa'?'#885500':'#cc2200';
+      var gk=r.geoRec==='ok'?'iok':r.geoRec==='wa'?'iwarn':'ibad';
+      return '<div class="sec"><div class="st">Fan Geometri Kontrol&#252;</div>'+
+        '<div class="ibox '+gk+'"><b>'+r.geoMsg+'</b></div>'+
+        '<table><tr><th>Parametre</th><th>De&#287;er</th><th>Birim</th></tr>'+
+        '<tr><td>Fan Geni&#351;li&#287;i (b)</td><td>'+r.fanBW.toFixed(0)+'</td><td>mm</td></tr>'+
+        '<tr style="background:#fafafa"><td>Fan &#199;ap&#305; (D)</td><td>'+r.fanBD.toFixed(0)+'</td><td>mm</td></tr>'+
+        '<tr><td>Oran (b/D)</td><td style="font-weight:700;color:'+gc+'">'+r.bdRat.toFixed(3)+'</td><td>&#8212;</td></tr>'+
+        '<tr style="background:#fafafa"><td>&#214;neri</td><td colspan="2" style="color:'+gc+';font-weight:700">'+r.geoMsg+'</td></tr>'+
+        '</table></div>';
+    })() : '')+
+
+    // RULMAN FREKANSLARI
+    (r.hasBrg ? (function(){
+      return '<div class="sec"><div class="st">Rulman Hasar Frekanslar&#305;</div>'+
+        '<table><tr><th>Frekans Tipi</th><th>A&#231;&#305;klama</th><th>Hz</th><th>&#199;al&#305;&#351;ma Kat&#305;</th></tr>'+
+        '<tr><td><b>BPFO</b></td><td>D&#305;&#351; Bilya Ar&#305;zas&#305;</td><td style="font-weight:700">'+r.BPFO.toFixed(2)+'</td><td>x'+(r.BPFO/r.fHz).toFixed(2)+'</td></tr>'+
+        '<tr style="background:#fafafa"><td><b>BPFI</b></td><td>&#304;&#231; Bilya Ar&#305;zas&#305;</td><td style="font-weight:700">'+r.BPFI.toFixed(2)+'</td><td>x'+(r.BPFI/r.fHz).toFixed(2)+'</td></tr>'+
+        '<tr><td><b>BSF</b></td><td>Bilya D&#246;n&#252;&#351; Ar&#305;zas&#305;</td><td style="font-weight:700">'+r.BSF.toFixed(2)+'</td><td>x'+(r.BSF/r.fHz).toFixed(2)+'</td></tr>'+
+        '<tr style="background:#fafafa"><td><b>FTF</b></td><td>Kafes Frekans&#305;</td><td style="font-weight:700">'+r.FTF.toFixed(2)+'</td><td>x'+(r.FTF/r.fHz).toFixed(2)+'</td></tr>'+
+        '</table>'+
+        '<div style="font-size:9pt;color:#888;margin-top:4px">Giri&#351;: D_p='+r.bPD+' mm | d_b='+r.bBD+' mm | z='+r.bZ2+' | &#945;='+r.bAlpha+'&#176; | f='+r.fHz.toFixed(2)+' Hz</div></div>';
+    })() : '')+
+
+    // L10
+    (r.hasL10 ? (function(){
+      var lc=r.L10h>20000?'#006633':r.L10h>5000?'#885500':'#cc2200';
+      var lk=r.L10h>20000?'iok':r.L10h>5000?'iwarn':'ibad';
+      var lm=r.L10h>20000?'&#304;yi &#8212; Uzun &#246;m&#252;r beklentisi':r.L10h>5000?'Orta &#8212; D&#252;zenli izleme &#246;nerilir':'D&#252;&#351;&#252;k &#8212; Acil bak&#305;m de&#287;erlendirin';
+      return '<div class="sec"><div class="st">L10 Yatak &#214;mr&#252; Tahmini</div>'+
+        '<div class="ibox '+lk+'"><b>L10 = '+Math.round(r.L10h).toLocaleString()+' saat | '+lm+'</b></div>'+
+        '<table><tr><th>Parametre</th><th>De&#287;er</th><th>Birim</th></tr>'+
+        '<tr><td>Dinamik Y&#252;k Kapasitesi (C)</td><td>'+r.bC+'</td><td>kN</td></tr>'+
+        '<tr style="background:#fafafa"><td>Dengesizlik Kuvveti (F_unbal)</td><td>'+r.F_unbal.toFixed(1)+'</td><td>N</td></tr>'+
+        '<tr><td>Rulman Tipi</td><td colspan="2">'+(r.bType==='roller'?'Makaral&#305; rulman (p = 10/3)':'Bilyali rulman (p = 3)')+'</td></tr>'+
+        '<tr style="background:#fafafa"><td><b>L10 &#214;mr&#252;</b></td><td colspan="2" style="font-weight:700;color:'+lc+'">'+Math.round(r.L10h).toLocaleString()+' saat</td></tr>'+
+        '</table></div>';
+    })() : '')+
+
     '<div class="sec"><div class="st">Yerle&#351;tirme Talimat&#305;</div>'+
     '<div class="gs"><div class="gn gb">1</div><div>Ekipman&#305; durdurun &#8212; LOTO uygulay&#305;n</div></div>'+
     '<div class="gs"><div class="gn gb">2</div><div>0&#176; referans&#305;ndan <b>'+r.ang.toFixed(1)+'&#176;</b> konumunu i&#351;aretleyin</div></div>'+
@@ -958,7 +1013,6 @@ function initApp() {
 <div class="hrow">
   <div>
     <h1><b>Tek Düzlem Fan Balans</b></h1>
-    <div class="sub">// Thearle 3 Nokta — ISO 1940-1 / ISO 10816 — v3.0 — Umut Küçük</div>
   </div>
   <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🙂</button>
 </div>
