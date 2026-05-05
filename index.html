@@ -117,81 +117,6 @@ footer{margin-top:40px;padding-top:14px;border-top:1px solid var(--border);font-
 
 <script>
 // ============================================================
-// PAYLAŞ
-// ============================================================
-function doShare() {
-  var r=SESSIONS[ACTIVE].res;
-  if(!r){alert('Önce hesaplama yapın.');return;}
-  var txt=
-    'Fan Balans Sonucu\n'+
-    '-------------------\n'+
-    'Agirlik : '+r.wc.toFixed(1)+' gram\n'+
-    'Aci     : '+r.ang.toFixed(1)+'\n'+
-    'ISO     : '+r.iso.c+' (G='+r.G.toFixed(1)+')\n'+
-    'V0      : '+r.v0.toFixed(2)+' mm/s\n'+
-    'Hedef   : < '+r.tgt.toFixed(2)+' mm/s\n'+
-    'Kanat   : '+r.nLbl+'\n'+
-    new Date().toLocaleDateString('tr-TR');
-
-  if (navigator.share) {
-    navigator.share({ title: 'Fan Balans Sonucu', text: txt })
-      .catch(function(){});
-  } else if (navigator.clipboard) {
-    navigator.clipboard.writeText(txt).then(function(){
-      alert('Sonuç panoya kopyalandı.');
-    }).catch(function(){
-      prompt('Kopyala (Ctrl+C):', txt);
-    });
-  } else {
-    prompt('Kopyala (Ctrl+C):', txt);
-  }
-}
-
-// ============================================================
-// TEMA
-// ============================================================
-function updateWtHint() {
-  var fm=getNum('fanM'), fr=getNum('fanR'), rpm=getNum('rpm');
-  var hint=document.getElementById('wtHint');
-  if(!hint) return;
-  if(isNaN(fm)||fm<=0||isNaN(fr)||fr<=0||isNaN(rpm)||rpm<=0){
-    hint.textContent=''; return;
-  }
-  var om=rpm*2*Math.PI/60;
-  var e_per=6.3*1000/om; // um
-  var U_per=e_per*fm;    // g.mm
-  var wt_rec=U_per/fr;   // gram
-  hint.textContent='(Önerilen: ' + wt_rec.toFixed(1) + ' gram — ISO G6.3 limiti için)';
-}
-
-// ============================================================
-// PAYLAŞ
-// ============================================================
-function doShare() {
-  var r=SESSIONS[ACTIVE].res;
-  if(!r){alert('Önce hesaplama yapın.');return;}
-  var txt=
-    'Fan Balans Sonucu\n'+
-    '-------------------\n'+
-    'Agirlik : '+r.wc.toFixed(1)+' gram\n'+
-    'Aci     : '+r.ang.toFixed(1)+'\n'+
-    'ISO     : '+r.iso.c+' (G='+r.G.toFixed(1)+')\n'+
-    'V0      : '+r.v0.toFixed(2)+' mm/s\n'+
-    'Hedef   : < '+r.tgt.toFixed(2)+' mm/s\n'+
-    'Kanat   : '+r.nLbl+'\n'+
-    new Date().toLocaleDateString('tr-TR');
-  if(navigator.share){
-    navigator.share({title:'Fan Balans Sonucu',text:txt}).catch(function(){});
-  } else if(navigator.clipboard){
-    navigator.clipboard.writeText(txt).then(function(){
-      alert('Sonuç panoya kopyalandı.');
-    }).catch(function(){ prompt('Kopyala (Ctrl+C):',txt); });
-  } else {
-    prompt('Kopyala (Ctrl+C):',txt);
-  }
-}
-
-// ============================================================
 // TEMA
 // ============================================================
 function toggleTheme() {
@@ -201,6 +126,23 @@ function toggleTheme() {
   var svgCircle = document.querySelector('#dialSvg circle');
   if (svgCircle) svgCircle.setAttribute('fill', isLight ? '#e8ecf0' : '#111');
   try { localStorage.setItem('theme', isLight ? 'light' : 'dark'); } catch(e) {}
+}
+
+// ============================================================
+// DENEME AGIRLIK ONERİSİ
+// ============================================================
+function updateWtHint() {
+  var fm=getNum('fanM'), fr=getNum('fanR'), rpm=getNum('rpm');
+  var hint=document.getElementById('wtHint');
+  if(!hint) return;
+  if(isNaN(fm)||fm<=0||isNaN(fr)||fr<=0||isNaN(rpm)||rpm<=0){
+    hint.textContent=''; return;
+  }
+  var om=rpm*2*Math.PI/60;
+  var e_per=6.3*1000/om;
+  var U_per=e_per*fm;
+  var wt_rec=U_per/fr;
+  hint.textContent='(Önerilen: ' + wt_rec.toFixed(1) + ' gram — ISO G6.3 limiti için)';
 }
 
 // ============================================================
@@ -1047,12 +989,6 @@ function doPdf() {
     '</div>'+
 
     '<button class="pbtn" onclick="window.print()">&#11015; PDF OLARAK KAYDET / YAZDIR</button>'+
-    '<button class="pbtn" onclick="doShareFromPdf()" style="background:#1a2a4a;color:#4488ff;border:1.5px solid #4488ff;margin-top:8px">&#8679; Paylaş</button>'+
-    '<script>function doShareFromPdf(){var txt="Fan Balans Sonucu\\n'+
-    r.wc.toFixed(1)+'g @ '+r.ang.toFixed(1)+'\\nISO '+r.iso.c+' (G='+r.G.toFixed(1)+')\\nV0='+r.v0.toFixed(2)+' mm\\/s\\nHedef < '+r.tgt.toFixed(2)+' mm\\/s\\n'+td+'";'+
-    'if(navigator.share){navigator.share({title:"Fan Balans",text:txt}).catch(function(){});}'+
-    'else if(navigator.clipboard){navigator.clipboard.writeText(txt).then(function(){alert("Panoya kopyalandi.");});}'+
-    'else{prompt("Kopyala:",txt);}}<\/script>'+
     '<div class="ft">Fan Balan&#351; Hesap Arac&#305; &#8212; Thearle 3 Nokta Y&#246;ntemi &#8212; v3.0 &#8212; Umut K&#252;&#231;&#252;k &#8212; '+td+'</div>'+
     '</div><\/body><\/html>';
 
@@ -1369,7 +1305,6 @@ function initApp() {
     </div>
 
     <button class="pbtn" onclick="doPdf()">&#11015; PDF İndir</button>
-    <button type="button" onclick="doShare()" style="display:block;width:100%;height:48px;margin-top:10px;background:var(--bg3);color:#4488ff;border:1.5px solid #4488ff;border-radius:6px;font-size:14px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer">&#8679; Paylaş</button>
     <button class="rbtn" onclick="doReset()">&#8635; Bu Çalışmayı Temizle</button>
   </div>
 </div>
