@@ -543,10 +543,11 @@ function getPdfCss(){
 }
 
 function openPdfWin(bodyHtml,title){
-  var h='<!DOCTYPE html><html lang="tr"><head><meta charset="UTF-8"><meta name="viewport" content="width=760"><title>'+title+'</title>'+
-    '<style>'+getPdfCss()+'html,body{margin:0;overflow-x:hidden}#pfwrap{width:760px;margin:0 auto;transform-origin:top left}@media print{#pfwrap{zoom:1!important;transform:none!important;width:auto!important}html,body{overflow:visible}}<\/style><\/head><body>'+
+  var h='<!DOCTYPE html><html lang="tr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>'+title+'</title>'+
+    '<style>'+getPdfCss()+'html,body{margin:0;overflow-x:hidden}#pfwrap{width:760px;margin:0 auto;transform-origin:top left}@media print{#pfwrap{zoom:1!important;transform:none!important;width:auto!important;margin:0!important}html,body{overflow:visible;width:auto}}<\/style><\/head><body>'+
     '<div id="pfwrap">'+bodyHtml+'<\/div>'+
     '<button class="pbtn" onclick="window.print()">&#11015; PDF OLARAK KAYDET / YAZDIR</button>'+
+    '<script>(function(){if(window.self!==window.top)return;function fit(){var w=document.getElementById("pfwrap");if(!w)return;var av=document.documentElement.clientWidth||window.innerWidth;w.style.zoom=av<772?(av/772):1;}window.addEventListener("resize",fit);window.addEventListener("load",fit);setTimeout(fit,30);fit();})();<\/script>'+
     '<\/body><\/html>';
   var pw=null;try{pw=window.open('','_blank');}catch(e){}
   if(pw&&pw.document){pw.document.write(h);pw.document.close();return;}
